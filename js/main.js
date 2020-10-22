@@ -26,15 +26,56 @@ d3.json("data/counties-10m.json").then(function(data) {
 	var path = d3.geoPath()
 		.projection(projection);
 
-	var counties = topojson.feature(data, data.objects.counties).features;
-	console.log(counties)
+	var countiesData = topojson.feature(data, data.objects.counties).features;
+	console.log(countiesData)
 
-	var p = svg.selectAll('county')
-		.data(counties)
+	var counties = svg.selectAll('county')
+		.data(countiesData)
 		.enter()
 		.append('path')
 		.attr('fill', 'lightgray')
 		.attr('stroke', 'black')
-		.attr('d', path);
+		.attr('d', path)
+		.attr('id', function(d,i){return d.properties.name;});
 
+	counties.on('click', function(d){
+		console.log(d);
+
+		// Clear last selection
+		d3.selectAll('path')
+			.attr('fill', 'lightgray');
+
+		// Select new state
+		d3.select(this)
+			.attr('fill','red');
+
+		// Chart popup
+		var chartPopup = svg.selectAll('rect')
+			.data(d, d => d);
+
+		chartPopup.exit().remove();
+
+		chartPopupDim = [200,100]
+
+		svg.append('rect')
+			.attr('x', `${d.offsetX - chartPopupDim[0]/2}`)
+			.attr('y', `${d.offsetY - chartPopupDim[1]/2}`)
+			.attr('width', `${chartPopupDim[0]}`)
+			.attr('height', `${chartPopupDim[1]}`)
+			.merge(chartPopup)
+			.attr('fill', 'black')
+			.attr('opacity', '0.5');
+
+		// Chart popup text
+		var chartPopupText = svg.selectAll('text')
+			.data(d, d => d);
+
+		chartPopupText.exit().remove();
+
+		svg.append('text')
+			.attr('x', `${d.offsetX - chartPopupDim[0]/2 + 4}`)
+			.attr('y', `${d.offsetY - chartPopupDim[1]/2 + 14}`)
+			.text(`${d.srcElement.id}`)
+			.attr('fill','white')
+	})
 });
