@@ -1,3 +1,6 @@
+// import * as d3 from "./d3/d3.js";
+// import * as topojson from "./topojson/topojson.js";
+
 var svgWidth = 1000
 var svgHeight = 700
 
@@ -11,7 +14,7 @@ var chartMargin = {
 var width = svgWidth - chartMargin.left - chartMargin.right;
 var height = svgHeight - chartMargin.top - chartMargin.bottom;
 
-var svg = d3.select("body")
+var svg = d3.select(".content")
 	.append("svg")
 	.attr("width", width)
 	.attr("height", height);
