@@ -55,7 +55,7 @@ d3.json("data/counties-10m.json").then(function (data) {
 
 		chartPopup.exit().remove();
 
-		chartPopupDim = [200, 100]
+		const chartPopupDim = [200, 100];
 
 		svg.append('rect')
 			.attr('x', `${d.offsetX - chartPopupDim[0] / 2}`)
