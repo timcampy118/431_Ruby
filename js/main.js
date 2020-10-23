@@ -18,7 +18,7 @@ var svg = d3.select("body")
 
 // Map drawing function
 // Data from "https://github.com/topojson/us-atlas"
-d3.json("data/counties-10m.json").then(function(data) {
+d3.json("data/counties-10m.json").then(function (data) {
 	console.log(data);
 
 	var projection = d3.geoAlbersUsa();
@@ -27,7 +27,7 @@ d3.json("data/counties-10m.json").then(function(data) {
 		.projection(projection);
 
 	var countiesData = topojson.feature(data, data.objects.counties).features;
-	console.log(countiesData)
+	console.log(countiesData);
 
 	var counties = svg.selectAll('county')
 		.data(countiesData)
@@ -36,9 +36,9 @@ d3.json("data/counties-10m.json").then(function(data) {
 		.attr('fill', 'lightgray')
 		.attr('stroke', 'black')
 		.attr('d', path)
-		.attr('id', function(d,i){return d.properties.name;});
+		.attr('id', function (d, i) { return d.properties.name; });
 
-	counties.on('click', function(d){
+	counties.on('click', function (d) {
 		console.log(d);
 
 		// Clear last selection
@@ -47,7 +47,7 @@ d3.json("data/counties-10m.json").then(function(data) {
 
 		// Select new state
 		d3.select(this)
-			.attr('fill','red');
+			.attr('fill', 'red');
 
 		// Chart popup
 		var chartPopup = svg.selectAll('rect')
@@ -55,11 +55,11 @@ d3.json("data/counties-10m.json").then(function(data) {
 
 		chartPopup.exit().remove();
 
-		chartPopupDim = [200,100]
+		chartPopupDim = [200, 100]
 
 		svg.append('rect')
-			.attr('x', `${d.offsetX - chartPopupDim[0]/2}`)
-			.attr('y', `${d.offsetY - chartPopupDim[1]/2}`)
+			.attr('x', `${d.offsetX - chartPopupDim[0] / 2}`)
+			.attr('y', `${d.offsetY - chartPopupDim[1] / 2}`)
 			.attr('width', `${chartPopupDim[0]}`)
 			.attr('height', `${chartPopupDim[1]}`)
 			.merge(chartPopup)
@@ -73,9 +73,10 @@ d3.json("data/counties-10m.json").then(function(data) {
 		chartPopupText.exit().remove();
 
 		svg.append('text')
-			.attr('x', `${d.offsetX - chartPopupDim[0]/2 + 4}`)
-			.attr('y', `${d.offsetY - chartPopupDim[1]/2 + 14}`)
+			.attr('x', `${d.offsetX - chartPopupDim[0] / 2 + 4}`)
+			.attr('y', `${d.offsetY - chartPopupDim[1] / 2 + 14}`)
 			.text(`${d.srcElement.id}`)
-			.attr('fill','white')
+			.attr('fill', 'white')
 	})
 });
+
