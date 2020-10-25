@@ -17,27 +17,42 @@ var svg = d3.select("#content")
 	.attr("height", height)
 	.call(responsivefy);
 
+var fips_to_name = {}
+
 // Map drawing function
 // Data from "https://github.com/topojson/us-atlas"
-d3.json("data/counties-10m.json").then(function (data) {
+Promise.all([
+	d3.json("data/counties-10m.json"),
+	d3.csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+]).then(function (data) {
 	console.log(data);
 
+	// Create map
 	var projection = d3.geoAlbersUsa();
 
 	var path = d3.geoPath()
 		.projection(projection);
 
-	var countiesData = topojson.feature(data, data.objects.counties).features;
+	// Extract map from JSON
+	var countiesData = topojson.feature(data[0], data[0].objects.counties).features;
 	console.log(countiesData);
 
+	// Extract county data
+	for(var i=0; i < countiesData.length; i++){
+		fips_to_name[countiesData[i].id] = countiesData[i].properties.name;
+	}
+
+	// Create counties from map
 	var counties = svg.selectAll('county')
 		.data(countiesData)
 		.enter()
 		.append('path')
-		.attr('fill', 'lightgray')
+		.attr('fill', function(d,i){
+			color = 200;
+			return d3.rgb(color,color,color);})
 		.attr('stroke', 'black')
 		.attr('d', path)
-		.attr('id', function (d, i) { return d.properties.name; });
+		.attr('id', function (d, i) { return d.id; });	
 
 	svg.call(responsivefy);
 
@@ -56,7 +71,7 @@ d3.json("data/counties-10m.json").then(function (data) {
 			.attr('fill', 'red');
 
 		// Chart popup
-		updatePopup(d, popupGroup, width, height);
+		updatePopup(d, popupGroup, width, height, fips_to_name);
 	})
 });
 

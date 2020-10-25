@@ -7,7 +7,7 @@ function createPopup (popupGroup)
 	popupGroup.append('text')
 }
 
-function updatePopup (d, popupGroup, width, height) {
+function updatePopup (d, popupGroup, width, height, fips_to_name) {
 	const chartPopupDim = [200, 100];
 
 	var x = Math.min(Math.max(d.offsetX - chartPopupDim[0]/2, 0), width);
@@ -26,7 +26,7 @@ function updatePopup (d, popupGroup, width, height) {
 	popupGroup.selectAll('text')
 		.attr('x', `${x + 4}`)
 		.attr('y', `${y + 14}`)
-		.text(`${d.srcElement.id}`)
+		.text(`${fips_to_name[d.srcElement.id]}`)
 		.attr('fill', 'white');
 
 	return popupGroup;
