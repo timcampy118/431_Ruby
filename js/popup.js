@@ -20,7 +20,7 @@ function updatePopup (d, popupGroup, width, height, fips_to_name) {
 		.attr('width', `${chartPopupDim[0]}`)
 		.attr('height', `${chartPopupDim[1]}`)
 		.attr('fill', 'black')
-		.attr('opacity', '0.5');
+		.attr('opacity', '0.7');
 
 	// Text
 	popupGroup.selectAll('text')

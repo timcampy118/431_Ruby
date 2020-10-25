@@ -23,9 +23,12 @@ var fips_to_name = {}
 // Data from "https://github.com/topojson/us-atlas"
 Promise.all([
 	d3.json("data/counties-10m.json"),
-	d3.csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+	d3.json("data/covid_cases.json")
 ]).then(function (data) {
 	console.log(data);
+
+	var currentWeek = 10;
+	var selectedID = 0;
 
 	// Create map
 	var projection = d3.geoAlbersUsa();
@@ -47,9 +50,7 @@ Promise.all([
 		.data(countiesData)
 		.enter()
 		.append('path')
-		.attr('fill', function(d,i){
-			color = 200;
-			return d3.rgb(color,color,color);})
+		.attr('fill', function(d,i){return calculateColor(d, i, data[1], currentWeek)})
 		.attr('stroke', 'black')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });	
@@ -59,21 +60,51 @@ Promise.all([
 	var popupGroup = svg.append('g');
 	createPopup(popupGroup);
 
+	// Logic for clicking in map
 	counties.on('click', function (d) {
 		console.log(d);
 
 		// Clear last selection
 		d3.selectAll('path')
-			.attr('fill', 'lightgray');
+			.attr('fill', function(d,i){return calculateColor(d, i, data[1], currentWeek)});
 
 		// Select new state
 		d3.select(this)
 			.attr('fill', 'red');
+		selectedID = this.id;
 
-		// Chart popup
+		// Update chart popup
 		updatePopup(d, popupGroup, width, height, fips_to_name);
 	})
+
+	d3.select('#currentDate').text(Object.keys(data[1])[currentWeek])
+	d3.select('#weekSlider').on('change', function(d){
+		var week = this.value
+		d3.selectAll('path')
+			.attr('fill', function(d,i){
+				color = 'red';
+				currentWeek = week
+				d3.select('#currentDate').text(Object.keys(data[1])[currentWeek])
+				if (d.id != selectedID)
+				{
+					color = calculateColor(d, i, data[1], currentWeek);
+				}
+
+				return color;})
+	});
+
 });
+
+// Calculate color of county
+function calculateColor(d, i, data, week)
+{
+	value = 0;
+	date = Object.keys(data)[week]
+	if (d.id in data[date]) {
+		value = data[date][d.id][0] / 1000;
+	}
+	return d3.interpolateLab('lightgray', 'green')(value);
+}
 
 // Help with responsive chart
 // source: https://brendansudol.com/writing/responsive-d3
