@@ -1,4 +1,5 @@
 var cache = null;
+
 /**
  * This function fetch the data either from network or from cache if possible.
  */
