@@ -1,99 +1,108 @@
-var svgWidth = 1000
-var svgHeight = 700
 
-var chartMargin = {
-	top: 10,
-	bottom: 10,
-	left: 10,
-	right: 10
-};
 
-var width = svgWidth - chartMargin.left - chartMargin.right;
-var height = svgHeight - chartMargin.top - chartMargin.bottom;
+function main() {
+	var { svg, width, height } = init_svg();
 
-var svg = d3.select("#content")
-	.append("svg")
-	.attr("width", width)
-	.attr("height", height)
-	.call(responsivefy);
+	var fips_to_name = {};
 
-var fips_to_name = {}
+	// Map drawing function
+	// Data from "https://github.com/topojson/us-atlas"
+	Promise.all([
+		d3.json("data/counties-10m.json"),
+		d3.json("data/covid_cases.json")
+	]).then(function (data) {
+		console.log(data);
 
-// Map drawing function
-// Data from "https://github.com/topojson/us-atlas"
-Promise.all([
-	d3.json("data/counties-10m.json"),
-	d3.json("data/covid_cases.json")
-]).then(function (data) {
-	console.log(data);
+		var currentWeek = 10;
+		var selectedID = 0;
 
-	var currentWeek = 10;
-	var selectedID = 0;
+		// Create map
+		var projection = d3.geoAlbersUsa();
 
-	// Create map
-	var projection = d3.geoAlbersUsa();
+		var path = d3.geoPath()
+			.projection(projection);
 
-	var path = d3.geoPath()
-		.projection(projection);
+		// Extract map from JSON
+		var countiesData = topojson.feature(data[0], data[0].objects.counties).features;
+		console.log(countiesData);
 
-	// Extract map from JSON
-	var countiesData = topojson.feature(data[0], data[0].objects.counties).features;
-	console.log(countiesData);
+		// Extract county data
+		for (var i = 0; i < countiesData.length; i++) {
+			fips_to_name[countiesData[i].id] = countiesData[i].properties.name;
+		}
 
-	// Extract county data
-	for(var i=0; i < countiesData.length; i++){
-		fips_to_name[countiesData[i].id] = countiesData[i].properties.name;
-	}
+		// Create counties from map
+		var counties = svg.selectAll('county')
+			.data(countiesData)
+			.enter()
+			.append('path')
+			.attr('fill', function (d, i) { return calculateColor(d, i, data[1], currentWeek); })
+			.attr('stroke', 'black')
+			.attr('d', path)
+			.attr('id', function (d, i) { return d.id; });
 
-	// Create counties from map
-	var counties = svg.selectAll('county')
-		.data(countiesData)
-		.enter()
-		.append('path')
-		.attr('fill', function(d,i){return calculateColor(d, i, data[1], currentWeek)})
-		.attr('stroke', 'black')
-		.attr('d', path)
-		.attr('id', function (d, i) { return d.id; });	
+		svg.call(responsivefy);
 
-	svg.call(responsivefy);
+		var popupGroup = svg.append('g');
+		createPopup(popupGroup);
 
-	var popupGroup = svg.append('g');
-	createPopup(popupGroup);
+		// Logic for clicking in map
+		counties.on('click', function (d) {
+			console.log(d);
 
-	// Logic for clicking in map
-	counties.on('click', function (d) {
-		console.log(d);
+			// Clear last selection
+			d3.selectAll('path')
+				.attr('fill', function (d, i) { return calculateColor(d, i, data[1], currentWeek); });
 
-		// Clear last selection
-		d3.selectAll('path')
-			.attr('fill', function(d,i){return calculateColor(d, i, data[1], currentWeek)});
+			// Select new state
+			d3.select(this)
+				.attr('fill', 'red');
+			selectedID = this.id;
 
-		// Select new state
-		d3.select(this)
-			.attr('fill', 'red');
-		selectedID = this.id;
+			// Update chart popup
+			updatePopup(d, popupGroup, width, height, fips_to_name);
+		});
 
-		// Update chart popup
-		updatePopup(d, popupGroup, width, height, fips_to_name);
-	})
+		d3.select('#currentDate').text(Object.keys(data[1])[currentWeek]);
+		d3.select('#weekSlider').on('change', function (d) {
+			var week = this.value;
+			d3.selectAll('path')
+				.attr('fill', function (d, i) {
+					color = 'red';
+					currentWeek = week;
+					d3.select('#currentDate').text(Object.keys(data[1])[currentWeek]);
+					if (d.id != selectedID) {
+						color = calculateColor(d, i, data[1], currentWeek);
+					}
 
-	d3.select('#currentDate').text(Object.keys(data[1])[currentWeek])
-	d3.select('#weekSlider').on('change', function(d){
-		var week = this.value
-		d3.selectAll('path')
-			.attr('fill', function(d,i){
-				color = 'red';
-				currentWeek = week
-				d3.select('#currentDate').text(Object.keys(data[1])[currentWeek])
-				if (d.id != selectedID)
-				{
-					color = calculateColor(d, i, data[1], currentWeek);
-				}
+					return color;
+				});
+		});
 
-				return color;})
 	});
+}
 
-});
+function init_svg() {
+	var svgWidth = 1000;
+	var svgHeight = 700;
+
+	var chartMargin = {
+		top: 10,
+		bottom: 10,
+		left: 10,
+		right: 10
+	};
+
+	var width = svgWidth - chartMargin.left - chartMargin.right;
+	var height = svgHeight - chartMargin.top - chartMargin.bottom;
+
+	var svg = d3.select("#content")
+		.append("svg")
+		.attr("width", width)
+		.attr("height", height)
+		.call(responsivefy);
+	return { svg, width, height };
+}
 
 // Calculate color of county
 function calculateColor(d, i, data, week)
@@ -134,3 +143,7 @@ function responsivefy(svg) {
         svg.attr("height", Math.round(targetWidth / aspect));
     }
 }
+
+(() => {
+	main();
+})()
