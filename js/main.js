@@ -7,10 +7,7 @@ function main() {
 
 	// Map drawing function
 	// Data from "https://github.com/topojson/us-atlas"
-	Promise.all([
-		d3.json("data/counties-10m.json"),
-		d3.json("data/covid_cases.json")
-	]).then(function (data) {
+	fetchData().then(function (data) {
 		console.log(data);
 
 		var currentWeek = 10;
@@ -105,8 +102,7 @@ function init_svg() {
 }
 
 // Calculate color of county
-function calculateColor(d, i, data, week)
-{
+function calculateColor(d, i, data, week) {
 	value = 0;
 	date = Object.keys(data)[week]
 	if (d.id in data[date]) {
@@ -118,30 +114,30 @@ function calculateColor(d, i, data, week)
 // Help with responsive chart
 // source: https://brendansudol.com/writing/responsive-d3
 function responsivefy(svg) {
-    // get container + svg aspect ratio
-    var container = d3.select(svg.node().parentNode),
-        width = parseInt(svg.style("width")),
-        height = parseInt(svg.style("height")),
-        aspect = width / height;
+	// get container + svg aspect ratio
+	var container = d3.select(svg.node().parentNode),
+		width = parseInt(svg.style("width")),
+		height = parseInt(svg.style("height")),
+		aspect = width / height;
 
-    // add viewBox and preserveAspectRatio properties,
-    // and call resize so that svg resizes on inital page load
-    svg.attr("viewBox", "0 0 " + width + " " + height)
-        .attr("perserveAspectRatio", "xMinYMid")
-        .call(resize);
+	// add viewBox and preserveAspectRatio properties,
+	// and call resize so that svg resizes on inital page load
+	svg.attr("viewBox", "0 0 " + width + " " + height)
+		.attr("perserveAspectRatio", "xMinYMid")
+		.call(resize);
 
-    // to register multiple listeners for same event type, 
-    // you need to add namespace, i.e., 'click.foo'
-    // necessary if you call invoke this function for multiple svgs
-    // api docs: https://github.com/mbostock/d3/wiki/Selections#on
-    d3.select(window).on("resize." + container.attr("id"), resize);
+	// to register multiple listeners for same event type, 
+	// you need to add namespace, i.e., 'click.foo'
+	// necessary if you call invoke this function for multiple svgs
+	// api docs: https://github.com/mbostock/d3/wiki/Selections#on
+	d3.select(window).on("resize." + container.attr("id"), resize);
 
-    // get width of container and resize svg to fit it
-    function resize() {
-        var targetWidth = parseInt(container.style("width"));
-        svg.attr("width", targetWidth);
-        svg.attr("height", Math.round(targetWidth / aspect));
-    }
+	// get width of container and resize svg to fit it
+	function resize() {
+		var targetWidth = parseInt(container.style("width"));
+		svg.attr("width", targetWidth);
+		svg.attr("height", Math.round(targetWidth / aspect));
+	}
 }
 
 (() => {
