@@ -1,4 +1,7 @@
 
+var covidCases = null;
+var counties = null;
+
 function main() {
 	var { svg, width, height } = initSVG();
 
@@ -7,7 +10,7 @@ function main() {
 	// Map drawing function
 	// Data from "https://github.com/topojson/us-atlas"
 	fetchData().then(function (data) {
-		console.log(data);
+		// console.log(data);
 
 		counties = data[0];
 		covidCases = data[1];
@@ -31,7 +34,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 	// Extract map from JSON
 	var countiesData = topojson.feature(counties, counties.objects.counties).features;
-	console.log(countiesData);
+	// console.log(countiesData);
 
 	// Extract county data
 	for (var i = 0; i < countiesData.length; i++) {
