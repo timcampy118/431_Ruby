@@ -42,16 +42,16 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 	}
 
 	// Create counties from map
-	var counties = svg.selectAll('county')
+	var mapGroup = svg.append('g')
+	var counties = mapGroup.selectAll('county')
 		.data(countiesData)
 		.enter()
 		.append('path')
+		.attr('class', 'county')
 		.attr('fill', function (d, i) { return calculateColor(d, i, covidCases, currentWeek); })
 		.attr('stroke', 'black')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });
-
-
 
 	var popup = new Popup(svg);
 
@@ -60,7 +60,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		console.log(d);
 
 		// Clear last selection
-		d3.selectAll('path')
+		d3.selectAll('.county')
 			.attr('fill', function (d, i) { return calculateColor(d, i, covidCases, currentWeek); });
 
 		// Select new state
@@ -69,17 +69,18 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		selectedID = this.id;
 
 		// Update chart popup
-		popup.update(d, width, height, fips_to_name);
+		popup.update(d, width, height, fips_to_name, covidCasesFor(selectedID));
 	});
 
 	d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
 	d3.select('#weekSlider').on('change', function (d) {
 		var week = this.value;
-		d3.selectAll('path')
+		d3.selectAll('.county')
 			.attr('fill', function (d, i) {
 				color = 'red';
 				currentWeek = week;
 				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+				console.log(selectedID)
 				if (d.id != selectedID) {
 					color = calculateColor(d, i, covidCases, currentWeek);
 				}
