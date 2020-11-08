@@ -5,8 +5,6 @@ var counties = null;
 function main() {
 	var { svg, width, height } = initSVG();
 
-
-
 	// Map drawing function
 	// Data from "https://github.com/topojson/us-atlas"
 	fetchData().then(function (data) {
@@ -25,6 +23,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 	var currentWeek = 10;
 	var selectedID = 0;
+	var displayCases = true;
 
 	// Create map
 	var projection = d3.geoAlbersUsa();
@@ -48,7 +47,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.enter()
 		.append('path')
 		.attr('class', 'county')
-		.attr('fill', function (d, i) { return calculateColor(d, i, covidCases, currentWeek); })
+		.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayCases); })
 		.attr('stroke', 'black')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });
@@ -61,7 +60,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 		// Clear last selection
 		d3.selectAll('.county')
-			.attr('fill', function (d, i) { return calculateColor(d, i, covidCases, currentWeek); });
+			.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayCases); });
 
 		// Select new state
 		d3.select(this)
@@ -81,7 +80,20 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				currentWeek = week;
 				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
 				if (d.id != selectedID) {
-					color = calculateColor(d, i, covidCases, currentWeek);
+					color = calculateColor(d, covidCases, currentWeek, displayCases);
+				}
+
+				return color;
+			});
+	});
+	d3.select('#casesCheckbox').on('change', function (d) {
+		displayCases = this.checked;
+		d3.selectAll('.county')
+			.attr('fill', function (d, i) {
+				color = 'red';
+				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+				if (d.id != selectedID) {
+					color = calculateColor(d, covidCases, currentWeek, displayCases);
 				}
 
 				return color;
@@ -119,13 +131,17 @@ function initSVG() {
 }
 
 // Calculate color of county
-function calculateColor(d, i, data, week) {
+function calculateColor(d, data, week, displayCases) {
 	value = 0;
 	date = Object.keys(data)[week]
 	if (d.id in data[date]) {
 		value = data[date][d.id][0] / 1000;
 	}
-	return d3.interpolateLab('lightgray', 'green')(value);
+	if (displayCases)
+	{
+		return d3.interpolateLab('lightgray', 'green')(value);
+	}
+	return 'lightgray';
 }
 
 // Help with responsive chart
