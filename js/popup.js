@@ -1,33 +1,37 @@
-function createPopup (popupGroup)
+class Popup
 {
-	// Popup background
-	popupGroup.append('rect')
+	constructor (svg)
+	{
+		this.popupGroup = svg.append('g');
 
-	// Popup text
-	popupGroup.append('text')
-}
+		// Popup background
+		this.background = this.popupGroup.append('rect')
 
-function updatePopup (d, popupGroup, width, height, fips_to_name) {
-	const chartPopupDim = [200, 100];
+		// Popup text
+		this.countyName = this.popupGroup.append('text')
+	}
 
-	var x = Math.min(Math.max(d.offsetX - chartPopupDim[0]/2, 0), width);
-	var y = Math.min(Math.max(d.offsetY - chartPopupDim[1]/2, 0), height);
+	update (d, width, height, fips_to_name)
+	{
+		const chartPopupDim = [200, 100];
 
-	// Background
-	popupGroup.selectAll('rect')
-		.attr('x', `${x}`)
-		.attr('y', `${y}`)
-		.attr('width', `${chartPopupDim[0]}`)
-		.attr('height', `${chartPopupDim[1]}`)
-		.attr('fill', 'black')
-		.attr('opacity', '0.7');
+		var x = Math.min(Math.max(d.offsetX - chartPopupDim[0]/2, 0), width);
+		var y = Math.min(Math.max(d.offsetY - chartPopupDim[1]-10, 0), height);
 
-	// Text
-	popupGroup.selectAll('text')
-		.attr('x', `${x + 4}`)
-		.attr('y', `${y + 14}`)
-		.text(`${fips_to_name[d.srcElement.id]}`)
-		.attr('fill', 'white');
+		// Background
+		this.background
+			.attr('x', `${x}`)
+			.attr('y', `${y}`)
+			.attr('width', `${chartPopupDim[0]}`)
+			.attr('height', `${chartPopupDim[1]}`)
+			.attr('fill', 'black')
+			.attr('opacity', '0.7');
 
-	return popupGroup;
+		// Text
+		this.countyName
+			.attr('x', `${x + 4}`)
+			.attr('y', `${y + 14}`)
+			.text(`${fips_to_name[d.srcElement.id]}`)
+			.attr('fill', 'white');
+	}
 }

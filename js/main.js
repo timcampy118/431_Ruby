@@ -53,8 +53,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 
 
-	var popupGroup = svg.append('g');
-	createPopup(popupGroup);
+	var popup = new Popup(svg);
 
 	// Logic for clicking in map
 	counties.on('click', function (d) {
@@ -70,7 +69,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		selectedID = this.id;
 
 		// Update chart popup
-		updatePopup(d, popupGroup, width, height, fips_to_name);
+		popup.update(d, width, height, fips_to_name);
 	});
 
 	d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
