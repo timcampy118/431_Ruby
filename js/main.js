@@ -69,7 +69,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		selectedID = this.id;
 
 		// Update chart popup
-		popup.update(d, width, height, fips_to_name, covidCasesFor(selectedID));
+		popup.onClick(d, width, height, fips_to_name, covidCasesFor(selectedID));
 	});
 
 	d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
@@ -80,7 +80,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				color = 'red';
 				currentWeek = week;
 				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
-				console.log(selectedID)
 				if (d.id != selectedID) {
 					color = calculateColor(d, i, covidCases, currentWeek);
 				}
@@ -88,6 +87,11 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				return color;
 			});
 	});
+
+	d3.timer(function(d)
+	{
+		popup.update()
+	})
 }
 
 function initSVG() {

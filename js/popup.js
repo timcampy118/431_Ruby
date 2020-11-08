@@ -12,17 +12,23 @@ class Popup
 
 		// Chart
 		this.chart = this.popupGroup.append('path')
+		this.chartXAxis = this.popupGroup.append('g')
+			.attr('color', 'white')
+			.attr('class', 'x-axis')
+		this.chartYAxis = this.popupGroup.append('g')
+			.attr('color', 'white')
+			.attr('class', 'y-axis')
+		this.clickTime = 0
 	}
 
-	update (d, width, height, fips_to_name, data)
+	onClick (d, width, height, fips_to_name, data)
 	{
-		console.log(data)
 		const boxDim = {x: 300, y: 150};
 		const chartMargins = {
-			left: 10,
+			left: 30,
 			right: 10,
 			top: 30,
-			bottom: 10
+			bottom: 20
 		};
 
 		var x = Math.min(Math.max(d.offsetX - boxDim.x/2, 0), width);
@@ -37,6 +43,18 @@ class Popup
 			.domain([d3.min(Object.values(data), function(d){return +d[0]}), d3.max(Object.values(data), function(d){return +d[0]})])
 			.range([y + boxDim.y - chartMargins.bottom, y + chartMargins.top])
 
+		this.chartXAxis
+			.attr('transform', 'translate(0, ' + (y + boxDim.y - chartMargins.bottom) + ')')
+			.call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%b')))
+		this.chartYAxis
+			.attr('transform', 'translate(' + (x + chartMargins.left) + ', '+ 0 + ')')
+			.call(d3.axisLeft(yScale).ticks(5).tickFormat(function(d){
+				if (d >= 1000)
+				{
+					d = d / 1000 + 'k';
+				}
+				return d;
+			}))
 
 		// Background
 		this.background
@@ -68,5 +86,15 @@ class Popup
 					return yScale(+Object.values(data)[i][0]);
 				})
 			)
+		this.clickTime = Date.now()
+	}
+
+	update()
+	{
+		var lineLength = this.chart.node().getTotalLength()
+		var t = Math.min((Date.now() - this.clickTime) / 1000, 1.0)
+		this.chart
+			.attr('stroke-dasharray', lineLength + ' ' + lineLength)
+			.attr('stroke-dashoffset', d3.interpolateNumber(0, lineLength)(1.0-t))
 	}
 }
