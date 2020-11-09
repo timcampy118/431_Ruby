@@ -1,7 +1,7 @@
 var cache = null;
 var dates = null;
 var fipsCasesCache = new Map();
-var fipsMobilityCache = new Map();
+
 /**
  * This function fetch the data either from network or from cache if possible.
  */
@@ -9,7 +9,8 @@ function fetchData() {
     let networkFetch = Promise.all([
         d3.json("data/counties-10m.json"),
         d3.json("data/covid_cases.json"),
-        d3.csv("data/CovidMobility.csv")
+        d3.json("data/mobility_date_data.json"),
+        d3.json("data/mobility_fips_data.json"),
     ]).then(data => {
         // console.log('Fetch from network');
         cache = data;
@@ -76,6 +77,43 @@ function getCovidDataForFipsCode(forDate, fipsCode) {
 
     if (dateData.hasOwnProperty(fipsCode)) {
         return dateData[fipsCode];
+    }
+    return null;
+}
+
+const categories = {
+    retail: 0,
+    grocery: 1,
+    parks: 2,
+    transit: 3,
+    workplaces: 4,
+    residential: 5
+}
+
+function getMobilityForFipsOnDate(fipsCode, date) {
+    const fipsData = getMobilityDataForFips(fipsCode);
+    if (fipsData != null && fipsData.hasOwnProperty(date)) {
+        return fipsData[date];
+    }
+    return null;
+}
+
+function getMobilityData(forDate) {
+    const dateMobilityData = cache[2];
+    if (dateMobilityData.hasOwnProperty(forDate)) {
+        return dateMobilityData[forDate];
+    }
+    return null;
+}
+
+// this is the constant to indicate that data for a categories is not available
+// 0 is not a good idea here
+const DATA_NOT_AVAILABLE = '-100000';
+
+function getMobilityDataForFips(fipsCode) {
+    const fipsMobilityData = cache[3];
+    if (fipsMobilityData.hasOwnProperty(fipsCode)) {
+        return fipsMobilityData[fipsCode];
     }
     return null;
 }
