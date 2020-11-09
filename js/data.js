@@ -1,13 +1,15 @@
 var cache = null;
 var dates = null;
 var fipsCasesCache = new Map();
+var fipsMobilityCache = new Map();
 /**
  * This function fetch the data either from network or from cache if possible.
  */
 function fetchData() {
     let networkFetch = Promise.all([
         d3.json("data/counties-10m.json"),
-        d3.json("data/covid_cases.json")
+        d3.json("data/covid_cases.json"),
+        d3.csv("data/CovidMobility.csv")
     ]).then(data => {
         // console.log('Fetch from network');
         cache = data;
@@ -77,3 +79,4 @@ function getCovidDataForFipsCode(forDate, fipsCode) {
     }
     return null;
 }
+
