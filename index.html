@@ -9,6 +9,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel='stylesheet' href='css/style.css'>
 
   <title>COVID Mobility Project</title>
   <!-- d3 -->
@@ -24,7 +25,8 @@
   </div>
 
   <div class="row justify-content-center mt-3">
-    <input type='range' id='weekSlider' min='0' max='30'></input>
+    <input type='range' id='weekSlider' style='margin: 5px; margin-right: 10px;' min='0' max='30'></input>
+    <input type='checkbox' style='margin: 5px' id='casesCheckbox' checked='true'>Cases</input>
   </div>
   <div class="row justify-content-center mt-3">
     <p id='currentDate'></p>
@@ -35,6 +37,7 @@
   </div>
 
   <!-- Custom scripts -->
+  <script src="js/data.js"></script>
   <script src="js/popup.js"></script>
   <script src="js/main.js"></script>
 
