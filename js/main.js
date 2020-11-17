@@ -60,15 +60,17 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.attr('fill', "red")
 		.attr("fill-opacity", 0.3)
 		.attr('stroke', 'red')
-		.attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+		.attr("transform", function(d) {
+				if (isNaN(path.centroid(d)[0]))
+				{
+					return "translate(0,0)";
+				}
+				return "translate(" + path.centroid(d) + ")";
+			})
 		.attr("r", function (d, i) {
 			radius = 0;
 			d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
-			if (d.id != selectedID) {
-				radius = calculateRadius(d, covidCases, currentWeek, displayCases);
-			}
-
-			return radius;
+			return calculateRadius(d, covidCases, currentWeek, displayCases);
 		});
 
 	var popup = new Popup(svg);
@@ -105,27 +107,25 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				return color;
 			});
 
-			svg.selectAll("circle").remove();
 			var week = this.value;
-			var circles = svg.append("g")
-				.attr("class", "bubble")
-				.selectAll("circle")
+			svg.selectAll("circle")
 				.data(countiesData)
-				.enter().append("circle")
 				.attr('fill', "red")
 				.attr("fill-opacity", 0.3)
 				.attr('stroke', 'red')
-				.attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-				.attr("r", function (d, i) {
-					radius = 0;
-					currentWeek = week;
-					d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
-					if (d.id != selectedID) {
-						radius = calculateRadius(d, covidCases, currentWeek, displayCases);
+				.attr("transform", function(d) {
+					if (isNaN(path.centroid(d)[0]))
+					{
+						return "translate(0,0)";
 					}
-
-					return radius;
-			});
+					return "translate(" + path.centroid(d) + ")";
+					})
+				.attr("r", function (d, i) {
+						radius = 0;
+						currentWeek = week;
+						d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+						return calculateRadius(d, covidCases, currentWeek, displayCases);
+					});
 	});
 	d3.select('#casesCheckbox').on('change', function (d) {
 		displayCases = this.checked;
