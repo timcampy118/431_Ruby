@@ -171,16 +171,30 @@ function initSVG() {
 	return { svg, width, height };
 }
 
+// Get color
+function getColor(d) {
+	return d > 50000 ? '#6e016b' :
+		   d > 10000  ? '#88419d' :
+		   d > 5000  ? '#8c6bb1' :
+		   d > 2000  ? '#8c96c6' :
+		   d > 1000   ? '#9ebcda' :
+		   d > 100   ? '#bfd3e6' :
+		   d > 1   ? '#e0ecf4' :
+					  '#f7fcfd';
+  }
+
 // Calculate color of county
 function calculateColor(d, data, week, displayCases) {
 	value = 0;
 	date = Object.keys(data)[week]
 	if (d.id in data[date]) {
-		value = data[date][d.id][0] / 1000;
+		value = data[date][d.id][0] // 10000;
+
 	}
 	if (displayCases)
 	{
-		return d3.interpolateLab('lightgray', 'green')(value);
+		// return d3.interpolateLab('lightgray', '#6e016b')(value);
+		return getColor(value);
 	}
 	return 'lightgray';
 }
