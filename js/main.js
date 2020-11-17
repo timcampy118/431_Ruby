@@ -1,6 +1,7 @@
 
 var covidCases = null;
 var counties = null;
+var selectedCovid = null;
 
 function main() {
 	var { svg, width, height } = initSVG();
@@ -86,8 +87,28 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				return color;
 			});
 	});
-	d3.select('#casesCheckbox').on('change', function (d) {
-		displayCases = this.checked;
+
+var covidOptions = ["cases", "deaths","none"]
+
+
+	//cases or deaths
+d3.select("#optionDrop")
+      .selectAll('myOptions')
+      .data(covidOptions)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+
+d3.select('#optionDrop').on('change', function (d) {
+	selectedCovid = document.getElementById('optionDrop').value;
+	
+	if(selectedCovid=="none")
+		displayCases = false;
+	else
+		displayCases = true;
+
 		d3.selectAll('.county')
 			.attr('fill', function (d, i) {
 				color = 'red';
@@ -99,6 +120,8 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				return color;
 			});
 	});
+
+
 
 	d3.timer(function(d)
 	{
@@ -130,12 +153,23 @@ function initSVG() {
 	return { svg, width, height };
 }
 
+
+//CHANGE THIS
 // Calculate color of county
 function calculateColor(d, data, week, displayCases) {
 	value = 0;
+	var pick=null;
+
+	if(selectedCovid=="cases")
+		pick=0;
+	else
+		pick=1;
+
+
+
 	date = Object.keys(data)[week]
 	if (d.id in data[date]) {
-		value = data[date][d.id][0] / 1000;
+		value = data[date][d.id][pick] / 1000;
 	}
 	if (displayCases)
 	{
