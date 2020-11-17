@@ -48,9 +48,28 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.append('path')
 		.attr('class', 'county')
 		.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayCases); })
-		.attr('stroke', 'black')
+		.attr('stroke', 'white')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });
+
+		var circles = svg.append("g")
+		.attr("class", "bubble")
+		.selectAll("circle")
+		.data(countiesData)
+		.enter().append("circle")
+		.attr('fill', "red")
+		.attr("fill-opacity", 0.3)
+		.attr('stroke', 'red')
+		.attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+		.attr("r", function (d, i) {
+			radius = 0;
+			d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+			if (d.id != selectedID) {
+				radius = calculateRadius(d, covidCases, currentWeek, displayCases);
+			}
+
+			return radius;
+		});
 
 	var popup = new Popup(svg);
 
@@ -84,6 +103,28 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				}
 
 				return color;
+			});
+
+			svg.selectAll("circle").remove();
+			var week = this.value;
+			var circles = svg.append("g")
+				.attr("class", "bubble")
+				.selectAll("circle")
+				.data(countiesData)
+				.enter().append("circle")
+				.attr('fill', "red")
+				.attr("fill-opacity", 0.3)
+				.attr('stroke', 'red')
+				.attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+				.attr("r", function (d, i) {
+					radius = 0;
+					currentWeek = week;
+					d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+					if (d.id != selectedID) {
+						radius = calculateRadius(d, covidCases, currentWeek, displayCases);
+					}
+
+					return radius;
 			});
 	});
 	d3.select('#casesCheckbox').on('change', function (d) {
@@ -142,6 +183,15 @@ function calculateColor(d, data, week, displayCases) {
 		return d3.interpolateLab('lightgray', 'green')(value);
 	}
 	return 'lightgray';
+}
+
+function calculateRadius(d, data, week, displayCases) {
+	value = 0;
+	date = Object.keys(data)[week]
+	if (d.id in data[date]) {
+		value = data[date][d.id][0] / 1000;
+	}
+	return value;
 }
 
 // Help with responsive chart
