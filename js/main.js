@@ -31,6 +31,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 	var path = d3.geoPath()
 		.projection(projection);
 
+
 	// Extract map from JSON
 	var countiesData = topojson.feature(counties, counties.objects.counties).features;
 	// console.log(countiesData);
