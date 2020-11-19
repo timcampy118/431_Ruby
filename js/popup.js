@@ -6,23 +6,43 @@ class Popup
 
 		// Popup background
 		this.background = this.popupGroup.append('rect')
+			.attr('class', 'popup')
 
 		// Popup text
 		this.countyName = this.popupGroup.append('text')
+			.attr('class', 'popup')
+
+		// Exit button
+		this.exitButton = this.popupGroup.append('g')
+			.attr('class', 'popup')
+		this.exitButtonText = this.exitButton.append('text')
+			.attr('class', 'popup')
+			.text('x')
+			.attr('fill', 'white')
+		this.exitButtonBackground = this.exitButton.append('rect')
+			.attr('class', 'popup')
+			.attr('opacity', 0)
+			.on('click', function(d)
+				{
+					d3.selectAll('.popup').attr('visibility', 'hidden')
+				});
 
 		// Chart
 		this.chart = this.popupGroup.append('path')
+			.attr('class', 'popup')
 		this.chartXAxis = this.popupGroup.append('g')
+			.attr('class', 'popup')
 			.attr('color', 'white')
-			.attr('class', 'x-axis')
 		this.chartYAxis = this.popupGroup.append('g')
+			.attr('class', 'popup')
 			.attr('color', 'white')
-			.attr('class', 'y-axis')
 		this.clickTime = 0
 	}
 
 	onClick (d, width, height, fips_to_name, data)
 	{
+		d3.selectAll('.popup').attr('visibility', 'visible')
+
 		const boxDim = {x: 300, y: 150};
 		const chartMargins = {
 			left: 30,
@@ -87,6 +107,17 @@ class Popup
 				})
 			)
 		this.clickTime = Date.now()
+
+		// Exit button
+		this.exitButtonText
+			.attr('x', `${x + boxDim.x - 10}`)
+			.attr('y', `${y + 10}`)
+		this.exitButtonBackground
+			.attr('x', `${x + boxDim.x - 15}`)
+			.attr('y', `${y}`)
+			.attr('width', '15')
+			.attr('height', '15')
+
 	}
 
 	update()

@@ -33,6 +33,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 	var path = d3.geoPath()
 		.projection(projection);
 
+
 	// Extract map from JSON
 	var countiesData = topojson.feature(counties, counties.objects.counties).features;
 	// console.log(countiesData);
@@ -50,9 +51,30 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.append('path')
 		.attr('class', 'county')
 		.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayCases); })
-		.attr('stroke', 'black')
+		.attr('stroke', 'white')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });
+
+		var circles = svg.append("g")
+		.attr("class", "bubble")
+		.selectAll("circle")
+		.data(countiesData)
+		.enter().append("circle")
+		.attr('fill', "red")
+		.attr("fill-opacity", 0.3)
+		.attr('stroke', 'red')
+		.attr("transform", function(d) {
+				if (isNaN(path.centroid(d)[0]))
+				{
+					return "translate(0,0)";
+				}
+				return "translate(" + path.centroid(d) + ")";
+			})
+		.attr("r", function (d, i) {
+			radius = 0;
+			d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+			return calculateRadius(d, covidCases, currentWeek, displayCases);
+		});
 
 	var popup = new Popup(svg);
 
@@ -87,6 +109,26 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 				return color;
 			});
+
+			var week = this.value;
+			svg.selectAll("circle")
+				.data(countiesData)
+				.attr('fill', "red")
+				.attr("fill-opacity", 0.3)
+				.attr('stroke', 'red')
+				.attr("transform", function(d) {
+					if (isNaN(path.centroid(d)[0]))
+					{
+						return "translate(0,0)";
+					}
+					return "translate(" + path.centroid(d) + ")";
+					})
+				.attr("r", function (d, i) {
+						radius = 0;
+						currentWeek = week;
+						d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+						return calculateRadius(d, covidCases, currentWeek, displayCases);
+					});
 	});
 
 var covidOptions = ["cases", "deaths","none"]
@@ -165,8 +207,22 @@ function initSVG() {
 	return { svg, width, height };
 }
 
+<<<<<<< HEAD
 
 //CHANGE THIS
+=======
+// Get color
+function getColor(d) {
+	return d > 1000 ? '#4d004b' :
+			d > 500  ? '#810f7c' :
+			d > 200  ? '#88419d' :
+			d > 100  ? '#8c6bb1' :
+			d > 50   ? '#8c96c6' :
+			d > 10   ? '#9ebcda' :
+			d > 1   ? '#bfd3e6' :
+						'#f7fcfd';
+}
+>>>>>>> ea88af2c98b3a306281b422cdef9ba357ade41d8
 // Calculate color of county
 function calculateColor(d, data, week, displayCases) {
 	value = 0;
@@ -181,13 +237,28 @@ function calculateColor(d, data, week, displayCases) {
 
 	date = Object.keys(data)[week]
 	if (d.id in data[date]) {
+<<<<<<< HEAD
 		value = data[date][d.id][pick] / 1000;
+=======
+		value = data[date][d.id][0] // 10000;
+
+>>>>>>> ea88af2c98b3a306281b422cdef9ba357ade41d8
 	}
 	if (displayCases)
 	{
-		return d3.interpolateLab('lightgray', 'green')(value);
+		// return d3.interpolateLab('lightgray', '#6e016b')(value);
+		return getColor(value);
 	}
 	return 'lightgray';
+}
+
+function calculateRadius(d, data, week, displayCases) {
+	value = 0;
+	date = Object.keys(data)[week]
+	if (d.id in data[date]) {
+		value = data[date][d.id][0] / 1000;
+	}
+	return value;
 }
 
 // Help with responsive chart
