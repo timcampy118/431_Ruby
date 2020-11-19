@@ -65,6 +65,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.attr('fill', "red")
 		.attr("fill-opacity", 0.3)
 		.attr('stroke', 'red')
+		.style('pointer-events', 'none')
 		.attr("transform", function(d) {
 				if (isNaN(path.centroid(d)[0]))
 				{
