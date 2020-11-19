@@ -2,6 +2,7 @@
 var covidCases = null;
 var counties = null;
 var selectedCovid = null;
+var selectedMobility = null;
 
 function main() {
 	var { svg, width, height } = initSVG();
@@ -89,6 +90,17 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 	});
 
 var covidOptions = ["cases", "deaths","none"]
+var mobilityOptions = ["retail", "grocery", "parks", "transit", "workplaces", "residential", "none"]
+
+
+	//cases or deaths
+d3.select("#mobilityDrop")
+      .selectAll('mobilityDrop')
+      .data(mobilityOptions)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
 
 	//cases or deaths
