@@ -174,16 +174,15 @@ function initSVG() {
 
 // Get color
 function getColor(d) {
-	return d > 50000 ? '#6e016b' :
-		   d > 10000  ? '#88419d' :
-		   d > 5000  ? '#8c6bb1' :
-		   d > 2000  ? '#8c96c6' :
-		   d > 1000   ? '#9ebcda' :
-		   d > 100   ? '#bfd3e6' :
-		   d > 1   ? '#e0ecf4' :
-					  '#f7fcfd';
-  }
-
+	return d > 1000 ? '#4d004b' :
+			d > 500  ? '#810f7c' :
+			d > 200  ? '#88419d' :
+			d > 100  ? '#8c6bb1' :
+			d > 50   ? '#8c96c6' :
+			d > 10   ? '#9ebcda' :
+			d > 1   ? '#bfd3e6' :
+						'#f7fcfd';
+}
 // Calculate color of county
 function calculateColor(d, data, week, displayCases) {
 	value = 0;
