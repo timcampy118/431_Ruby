@@ -210,10 +210,6 @@ function initSVG() {
 	return { svg, width, height };
 }
 
-<<<<<<< HEAD
-
-//CHANGE THIS
-=======
 // Get color
 function getColor(d) {
 	return d > 1000 ? '#4d004b' :
@@ -225,7 +221,6 @@ function getColor(d) {
 			d > 1   ? '#bfd3e6' :
 						'#f7fcfd';
 }
->>>>>>> ea88af2c98b3a306281b422cdef9ba357ade41d8
 // Calculate color of county
 function calculateColor(d, data, week, displayCases) {
 	value = 0;
@@ -240,12 +235,7 @@ function calculateColor(d, data, week, displayCases) {
 
 	date = Object.keys(data)[week]
 	if (d.id in data[date]) {
-<<<<<<< HEAD
 		value = data[date][d.id][pick] / 1000;
-=======
-		value = data[date][d.id][0] // 10000;
-
->>>>>>> ea88af2c98b3a306281b422cdef9ba357ade41d8
 	}
 	if (displayCases)
 	{
