@@ -43,6 +43,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 	// Create counties from map
 	var mapGroup = svg.append('g')
+		.attr("transform", `translate(${500}, 0)`);
 	var counties = mapGroup.selectAll('county')
 		.data(countiesData)
 		.enter()
@@ -54,6 +55,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.attr('id', function (d, i) { return d.id; });
 
 		var circles = svg.append("g")
+		.attr("transform", `translate(${500}, 0)`)
 		.attr("class", "bubble")
 		.selectAll("circle")
 		.data(countiesData)
@@ -149,8 +151,8 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 }
 
 function initSVG() {
-	var svgWidth = 1000;
-	var svgHeight = 700;
+	var svgWidth = 2000;
+	var svgHeight = 1400;
 
 	var chartMargin = {
 		top: 10,
@@ -164,9 +166,10 @@ function initSVG() {
 
 	var svg = d3.select("#content")
 		.append("svg")
+		
 		.attr("width", width)
 		.attr("height", height)
-		.call(responsivefy);
+		// .call(responsivefy);
 
 	svg.call(responsivefy);
 	return { svg, width, height };
