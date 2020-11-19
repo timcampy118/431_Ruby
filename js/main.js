@@ -57,32 +57,68 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.enter()
 		.append('path')
 		.attr('class', 'county')
-		.attr('fill', function (d, i) { return calculateColor(d, mobilityDate, currentWeek, displayMobility); })
-		.attr('stroke', 'white')
+		.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayMobility); })
+		.attr('stroke', 'gray')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });
 
-	var circles = svg.append("g")
+		
+		// SPIKES FOR CASES
+
+	var spikes = svg.append("g")
+
 		.attr("transform", `translate(${500}, 0)`)
-		.attr("class", "bubble")
-		.selectAll("circle")
+		.attr("class", "spikes")
+		.selectAll("spikes")
 		.data(countiesData)
-		.enter().append("circle")
-		.attr('fill', "red")
-		.attr("fill-opacity", 0.3)
-		.attr('stroke', 'red')
+		.enter()
+		.append("path")
+		.attr("fill", "red")
+		.attr("fill-opacity", 0.1)
+		.attr("stroke", "red")
 		.attr("transform", function(d) {
-				if (isNaN(path.centroid(d)[0]))
-				{
-					return "translate(0,0)";
-				}
-				return "translate(" + path.centroid(d) + ")";
+			if (isNaN(path.centroid(d)[0]))
+			{
+				return "translate(0,0)";
+			}
+			return "translate(" + path.centroid(d) + ")";
 			})
-		.attr("r", function (d, i) {
-			radius = 0;
+		.attr("d", function (d, i) {
 			d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
-			return calculateRadius(d, covidCases, currentWeek, displayCases);
+			var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
+			return spike(cases)
 		});
+
+		// SPIKES FOR CASES END
+
+
+		// CIRCLES FOR CASES
+
+		// var circles = svg.append("g")
+		// .attr("transform", `translate(${500}, 0)`)
+		// .attr("class", "bubble")
+		// .selectAll("circle")
+		// .data(countiesData)
+		// .enter()
+		// .append("circle")
+		// .attr('fill', "red")
+		// .attr("fill-opacity", 0.3)
+		// .attr('stroke', 'red')
+		// .style('pointer-events', 'none')
+		// .attr("transform", function(d) {
+		// 		if (isNaN(path.centroid(d)[0]))
+		// 		{
+		// 			return "translate(0,0)";
+		// 		}
+		// 		return "translate(" + path.centroid(d) + ")";
+		// 	})
+		// .attr("r", function (d, i) {
+		// 	radius = 0;
+		// 	d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+		// 	return calculateRadius(d, covidCases, currentWeek, displayCases);
+		// });
+
+		// CIRCLES FOR CASES END
 
 	var popup = new Popup(svg);
 
@@ -119,24 +155,59 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 			});
 
 			var week = this.value;
-			svg.selectAll("circle")
-				.data(countiesData)
-				.attr('fill', "red")
-				.attr("fill-opacity", 0.3)
-				.attr('stroke', 'red')
-				.attr("transform", function(d) {
-					if (isNaN(path.centroid(d)[0]))
-					{
-						return "translate(0,0)";
-					}
-					return "translate(" + path.centroid(d) + ")";
-					})
-				.attr("r", function (d, i) {
-						radius = 0;
-						currentWeek = week;
-						d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
-						return calculateRadius(d, covidCases, currentWeek, displayCases);
-					});
+
+			// SPIKES FOR CASES
+
+			document.querySelectorAll('.spikes').forEach(e => e.remove());
+			var spikes = svg.append("g")
+			.attr("transform", `translate(${500}, 0)`)
+			.attr("class", "spikes")
+			.selectAll("spikes")
+			.data(countiesData)
+			.enter()
+			.append("path")
+			.attr("fill", "red")
+			.attr("fill-opacity", 0.1)
+			.attr("stroke", "red")
+			.attr("transform", function(d) {
+				if (isNaN(path.centroid(d)[0]))
+				{
+					return "translate(0,0)";
+				}
+				return "translate(" + path.centroid(d) + ")";
+				})
+			.attr("d", function (d, i) {
+				currentWeek = week;
+				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+				var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
+				return spike(cases)
+			});
+
+			// SPIKES FOR CASES END
+
+
+			// CIRCLES FOR CASES
+
+			// svg.selectAll("circle")
+			// .data(countiesData)
+			// .attr('fill', "red")
+			// .attr("fill-opacity", 0.3)
+			// .attr('stroke', 'red')
+			// .attr("transform", function(d) {
+			// 	if (isNaN(path.centroid(d)[0]))
+			// 	{
+			// 		return "translate(0,0)";
+			// 	}
+			// 	return "translate(" + path.centroid(d) + ")";
+			// 	})
+			// .attr("r", function (d, i) {
+			// 		radius = 0;
+			// 		currentWeek = week;
+			// 		d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+			// 		return calculateRadius(d, covidCases, currentWeek, displayCases);
+			// });
+
+			// CIRCLES FOR CASES END
 
 	});
 
@@ -320,6 +391,27 @@ function calculateRadius(d, data, week, displayCases) {
 	//console.log(value);
 	return value;
 }
+
+function calculateSpikeLength(d, data, week, displayCases) {
+	value = 0;
+	if(!displayCases)
+		return 0;
+	var pick = 0;
+	if (selectedCovid == "cases")
+		pick=0;
+	else
+		pick=1;
+
+	date = Object.keys(data)[week]
+	if (d.id in data[date]) {
+		value = data[date][d.id][pick] / 1000;
+	}
+	return value * 1.5;
+}
+
+// length = d3.scaleLinear([0, d3.max(data, d => d.value)], [0, 200])
+
+spike = (length, width = 7) => `M${-width / 2},0L0,${-length}L${width / 2},0`
 
 // Help with responsive chart
 // source: https://brendansudol.com/writing/responsive-d3
