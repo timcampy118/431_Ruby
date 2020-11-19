@@ -1,6 +1,8 @@
 
 var covidCases = null;
 var counties = null;
+var selectedCovid = null;
+var selectedMobility = null;
 
 function main() {
 	var { svg, width, height } = initSVG();
@@ -130,8 +132,39 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 						return calculateRadius(d, covidCases, currentWeek, displayCases);
 					});
 	});
-	d3.select('#casesCheckbox').on('change', function (d) {
-		displayCases = this.checked;
+
+var covidOptions = ["cases", "deaths","none"]
+var mobilityOptions = ["retail", "grocery", "parks", "transit", "workplaces", "residential", "none"]
+
+
+	//cases or deaths
+d3.select("#mobilityDrop")
+      .selectAll('mobilityDrop')
+      .data(mobilityOptions)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+
+	//cases or deaths
+d3.select("#optionDrop")
+      .selectAll('myOptions')
+      .data(covidOptions)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+
+d3.select('#optionDrop').on('change', function (d) {
+	selectedCovid = document.getElementById('optionDrop').value;
+	
+	if(selectedCovid=="none")
+		displayCases = false;
+	else
+		displayCases = true;
+
 		d3.selectAll('.county')
 			.attr('fill', function (d, i) {
 				color = 'red';
@@ -143,6 +176,8 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				return color;
 			});
 	});
+
+
 
 	d3.timer(function(d)
 	{
@@ -175,25 +210,42 @@ function initSVG() {
 	return { svg, width, height };
 }
 
+<<<<<<< HEAD
+
+//CHANGE THIS
+=======
 // Get color
 function getColor(d) {
-	return d > 50000 ? '#6e016b' :
-		   d > 10000  ? '#88419d' :
-		   d > 5000  ? '#8c6bb1' :
-		   d > 2000  ? '#8c96c6' :
-		   d > 1000   ? '#9ebcda' :
-		   d > 100   ? '#bfd3e6' :
-		   d > 1   ? '#e0ecf4' :
-					  '#f7fcfd';
-  }
-
+	return d > 1000 ? '#4d004b' :
+			d > 500  ? '#810f7c' :
+			d > 200  ? '#88419d' :
+			d > 100  ? '#8c6bb1' :
+			d > 50   ? '#8c96c6' :
+			d > 10   ? '#9ebcda' :
+			d > 1   ? '#bfd3e6' :
+						'#f7fcfd';
+}
+>>>>>>> ea88af2c98b3a306281b422cdef9ba357ade41d8
 // Calculate color of county
 function calculateColor(d, data, week, displayCases) {
 	value = 0;
+	var pick=null;
+
+	if(selectedCovid=="cases")
+		pick=0;
+	else
+		pick=1;
+
+
+
 	date = Object.keys(data)[week]
 	if (d.id in data[date]) {
+<<<<<<< HEAD
+		value = data[date][d.id][pick] / 1000;
+=======
 		value = data[date][d.id][0] // 10000;
 
+>>>>>>> ea88af2c98b3a306281b422cdef9ba357ade41d8
 	}
 	if (displayCases)
 	{
