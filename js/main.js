@@ -66,7 +66,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		// SPIKES FOR CASES
 
 	var spikes = svg.append("g")
-
 		.attr("transform", `translate(${500}, 0)`)
 		.attr("class", "spikes")
 		.selectAll("spikes")
@@ -88,37 +87,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 			var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
 			return spike(cases)
 		});
-
-		// SPIKES FOR CASES END
-
-
-		// CIRCLES FOR CASES
-
-		// var circles = svg.append("g")
-		// .attr("transform", `translate(${500}, 0)`)
-		// .attr("class", "bubble")
-		// .selectAll("circle")
-		// .data(countiesData)
-		// .enter()
-		// .append("circle")
-		// .attr('fill', "red")
-		// .attr("fill-opacity", 0.3)
-		// .attr('stroke', 'red')
-		// .style('pointer-events', 'none')
-		// .attr("transform", function(d) {
-		// 		if (isNaN(path.centroid(d)[0]))
-		// 		{
-		// 			return "translate(0,0)";
-		// 		}
-		// 		return "translate(" + path.centroid(d) + ")";
-		// 	})
-		// .attr("r", function (d, i) {
-		// 	radius = 0;
-		// 	d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
-		// 	return calculateRadius(d, covidCases, currentWeek, displayCases);
-		// });
-
-		// CIRCLES FOR CASES END
 
 	var popup = new Popup(svg);
 
@@ -148,7 +116,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				currentWeek = week;
 				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
 				if (d.id != selectedID) {
-					color = calculateColor(d, covidCases, currentWeek, displayMobility);
+					color = calculateColor(d, mobilityDate, currentWeek, displayMobility);
 				}
 
 				return color;
@@ -157,7 +125,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 			var week = this.value;
 
 			// SPIKES FOR CASES
-
 			svg.selectAll(".spikes")
 			.attr("transform", `translate(${500}, 0)`)
 			.attr("class", "spikes")
@@ -229,8 +196,6 @@ d3.select('#mobilityDrop').on('change', function (d) {
 			d3.select("#weekSlider").dispatch("change");
 	});
 
-
-
 d3.select('#optionDrop').on('change', function (d) {
 	selectedCovid = document.getElementById('optionDrop').value;
 	
@@ -243,8 +208,6 @@ d3.select('#optionDrop').on('change', function (d) {
 	console.log(displayCases);
 	d3.select("#weekSlider").dispatch("change");
 
-
-	
 	});
 
 	d3.timer(function(d)
@@ -280,42 +243,42 @@ function initSVG() {
 
 // Get color
 function getColor(d) {
-	return d > 1000 ? '#4d004b' :
-			d > 500  ? '#810f7c' :
-			d > 200  ? '#88419d' :
-			d > 100  ? '#8c6bb1' :
-			d > 50   ? '#8c96c6' :
-			d > 10   ? '#9ebcda' :
-			d > 1   ? '#bfd3e6' :
-						'#f7fcfd';
+	return d >= 100 ? '#00ff00' :
+			d >= 50  ? '#4eff4e' :
+			d >= 25 ? '#a7ffa7' :
+			d >= 10 ? "d1ffd1" :
+			d <= -10   ? '#ffffdb' :
+			d <= -20   ? '#ffffa4' :
+			d <= -50   ? '#ffff6d' :
+			d <= -100   ? '#ffff00' :
+			isNaN(d) ? "#ffff00":
+			 '#ffffff';
 }
 // Calculate color of county
 function calculateColor(d, data, week, displayMobility) {
 	value = 0;
 	var pick=null;
 
-switch (selectedMobility) {
-  case "retail":
-    pick = 0;
-    break;
-  case "grocery":
-    pick = 1;
-    break;
-  case "parks":
-    pick = 2;
-    break;
-  case "transit":
-    pick = 3;
-    break;
-  case "workplaces":
-    pick = 4;
-    break;
-  case "residential":
-    pick = 5;
-    break;
-
-}
-
+	switch (selectedMobility) {
+	case "retail":
+		pick = 0;
+		break;
+	case "grocery":
+		pick = 1;
+		break;
+	case "parks":
+		pick = 2;
+		break;
+	case "transit":
+		pick = 3;
+		break;
+	case "workplaces":
+		pick = 4;
+		break;
+	case "residential":
+		pick = 5;
+		break;
+	}
 
 	date = Object.keys(data)[week]
 	if (data[date] != null && d.id in data[date]) {
