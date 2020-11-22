@@ -158,8 +158,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 			// SPIKES FOR CASES
 
-			document.querySelectorAll('.spikes').forEach(e => e.remove());
-			var spikes = svg.append("g")
+			svg.selectAll(".spikes")
 			.attr("transform", `translate(${500}, 0)`)
 			.attr("class", "spikes")
 			.selectAll("spikes")
@@ -182,33 +181,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
 				return spike(cases)
 			});
-
-			// SPIKES FOR CASES END
-
-
-			// CIRCLES FOR CASES
-
-			// svg.selectAll("circle")
-			// .data(countiesData)
-			// .attr('fill', "red")
-			// .attr("fill-opacity", 0.3)
-			// .attr('stroke', 'red')
-			// .attr("transform", function(d) {
-			// 	if (isNaN(path.centroid(d)[0]))
-			// 	{
-			// 		return "translate(0,0)";
-			// 	}
-			// 	return "translate(" + path.centroid(d) + ")";
-			// 	})
-			// .attr("r", function (d, i) {
-			// 		radius = 0;
-			// 		currentWeek = week;
-			// 		d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
-			// 		return calculateRadius(d, covidCases, currentWeek, displayCases);
-			// });
-
-			// CIRCLES FOR CASES END
-
 	});
 
 var covidOptions = ["none","cases", "deaths"]
@@ -274,13 +246,6 @@ d3.select('#optionDrop').on('change', function (d) {
 
 	
 	});
-
-
-
-
-
-
-
 
 	d3.timer(function(d)
 	{
