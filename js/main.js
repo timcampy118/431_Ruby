@@ -64,8 +64,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.attr('id', function (d, i) { return d.id; });
 
 		
-		// SPIKES FOR CASES
-
+	// SPIKES FOR CASES
 	var spikes = svg.append("g")
 		.attr("transform", `translate(${500}, 0)`)
 		.attr("class", "spikes")
@@ -75,6 +74,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.append("path")
 		.attr("fill", "red")
 		.attr("fill-opacity", 0.1)
+		.attr("opacity", 0)
 		.attr("stroke", "red")
 		.attr("transform", function(d) {
 			if (isNaN(path.centroid(d)[0]))
@@ -97,7 +97,10 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		
 		// Clear last selection
 		d3.selectAll('.county')
-			.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayMobility); });
+			.attr('fill', function (d, i)
+			{
+				return calculateColor(d, mobilityDate, currentWeek, displayMobility);
+			});
 
 		// Select new state
 		d3.select(this)
@@ -118,7 +121,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 			.attr('fill', function (d, i) {
 				color = 'red';
 				currentWeek = week;
-				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+				d3.select('#currentDate').text(Object.keys(mobilityDate)[currentWeek]);
 				if (d.id != selectedID) {
 					color = calculateColor(d, mobilityDate, currentWeek, displayMobility);
 				}
@@ -129,15 +132,14 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 			var week = this.value;
 
 			// SPIKES FOR CASES
-			svg.selectAll(".spikes")
-			.attr("transform", `translate(${500}, 0)`)
-			.attr("class", "spikes")
-			.selectAll("spikes")
-			.data(countiesData)
-			.enter()
-			.append("path")
-			.attr("fill", "red")
-			.attr("fill-opacity", 0.1)
+			svg.selectAll(".spikes").selectAll("path")
+			.attr("opacity", function(d)
+			{
+				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+				var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
+				cases = Math.min(cases*10, 1.0)
+				return cases
+			})
 			.attr("stroke", "red")
 			.attr("transform", function(d) {
 				if (isNaN(path.centroid(d)[0]))
