@@ -30,6 +30,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 	var currentWeek = 10;
 	var selectedID = 0;
+	var selectedPosition = [0,0]
 	var displayCases = false;
 	var displayMobility = false;
 
@@ -89,11 +90,11 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		});
 
 	var popup = new Popup(svg);
+	var graphs = new Graphs(svg);
 
 	// Logic for clicking in map
 	counties.on('click', function (d) {
 		
-
 		// Clear last selection
 		d3.selectAll('.county')
 			.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayMobility); });
@@ -102,9 +103,12 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		d3.select(this)
 			.attr('fill', 'red');
 		selectedID = this.id;
+		selectedPosition = path.centroid(d3.select(this).datum())
+		selectedPosition[0] += 500
 
 		// Update chart popup
-		popup.onClick(d, width, height, fips_to_name, covidCasesFor(selectedID));
+		popup.onClick(d, width, height, fips_to_name, covidCasesFor(selectedID), selectedPosition);
+		graphs.onClick(d, width, height, fips_to_name, mobilityFips[selectedID])
 	});
 
 	d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
@@ -140,6 +144,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				{
 					return "translate(0,0)";
 				}
+
 				return "translate(" + path.centroid(d) + ")";
 				})
 			.attr("d", function (d, i) {
@@ -213,6 +218,7 @@ d3.select('#optionDrop').on('change', function (d) {
 	d3.timer(function(d)
 	{
 		popup.update()
+		graphs.update()
 	})
 }
 
@@ -243,15 +249,14 @@ function initSVG() {
 
 // Get color
 function getColor(d) {
-	return d >= 100 ? '#00ff00' :
+	return	d >= 100 ? '#00ff00' :
 			d >= 50  ? '#4eff4e' :
 			d >= 25 ? '#a7ffa7' :
-			d >= 10 ? "d1ffd1" :
-			d <= -10   ? '#ffffdb' :
-			d <= -20   ? '#ffffa4' :
-			d <= -50   ? '#ffff6d' :
+			d >= 10 ? '#d1ffd1' :
 			d <= -100   ? '#ffff00' :
-			isNaN(d) ? "#ffff00":
+			d <= -50   ? '#ffff6d' :
+			d <= -20   ? '#ffffa4' :
+			d <= -10   ? '#ffffdb' :
 			 '#ffffff';
 }
 // Calculate color of county
@@ -283,12 +288,16 @@ function calculateColor(d, data, week, displayMobility) {
 	date = Object.keys(data)[week]
 	if (data[date] != null && d.id in data[date]) {
 		value = data[date][d.id][pick];
-		//console.log(data)
 	}
 	if (displayMobility)
 	{
 		// return d3.interpolateLab('lightgray', '#6e016b')(value);
-		return getColor(value);
+		//console.log(value);
+		if (isNaN(value))
+		{
+			value = 0
+		}
+		return getColor(+value);
 	}
 	return 'lightgray';
 }

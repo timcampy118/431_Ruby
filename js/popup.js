@@ -44,11 +44,12 @@ class Popup
 		this.clickTime = 0
 	}
 
-	onClick (d, width, height, fips_to_name, data)
+	onClick (d, width, height, fips_to_name, data, selectedPosition)
 	{
 		d3.selectAll('.popup').attr('visibility', 'visible')
 
 		const boxDim = {x: 300, y: 150};
+		const minX = 250 * 2 + 50;
 		const chartMargins = {
 			left: 30,
 			right: 30,
@@ -56,8 +57,10 @@ class Popup
 			bottom: 20
 		};
 
-		var x = Math.min(Math.max(d.offsetX - boxDim.x/2, 0), width);
-		var y = Math.min(Math.max(d.offsetY - boxDim.y-10, 0), height);
+		var offsetX = selectedPosition[0]
+		var offsetY = selectedPosition[1]
+		var x = Math.min(Math.max(offsetX - boxDim.x/2, minX), width);
+		var y = Math.min(Math.max(offsetY - boxDim.y-10, 0), height);
 
 		// Date scale
 		var xScale = d3.scaleTime()
