@@ -59,7 +59,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.append('path')
 		.attr('class', 'county')
 		.attr('fill', 'white')
-		.attr('stroke', 'gray')
+		.attr('stroke', 'lightgray')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });
 
