@@ -21,7 +21,6 @@ function main() {
 		mobilityFips = data[3];
 
 		initCovidCasesMap(svg, width, height, counties, covidCases);
-
 	});
 }
 
