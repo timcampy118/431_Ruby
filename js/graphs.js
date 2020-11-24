@@ -34,8 +34,8 @@ class Graph
 			bottom: 20
 		};
 
-		var offsetX = Math.floor(index % 2) * boxDim.x
-		var offsetY = Math.floor(index / 2) * boxDim.y
+		var offsetX = Math.floor(index % 2) * (boxDim.x + 5)
+		var offsetY = Math.floor(index / 2) * (boxDim.y + 5)
 		var x = Math.min(Math.max(offsetX, 0), width);
 		var y = Math.min(Math.max(offsetY, 0), height);
 
