@@ -10,6 +10,7 @@ def covidCases():
 		fileData = f.read().decode('utf-8')
 
 	reader = csv.reader(StringIO(fileData), delimiter=',')
+	endDate = datetime.date(2020, 8, 24)
 
 	next(reader, None)
 	for row in reader:
@@ -21,6 +22,10 @@ def covidCases():
 			continue
 
 		# if no entries added to date, create date
+
+		if (endDate - datetime.date(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))).days < 0:
+			continue
+
 		if date not in data:
 			data[date] = {}		
 
@@ -75,4 +80,4 @@ def mobility():
 
 if __name__ == '__main__':
 	covidCases()
-	mobility()
+	#mobility()

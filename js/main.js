@@ -5,7 +5,7 @@ var selectedCovid = "none";
 var selectedMobility = "none";
 var mobilityDate = null;
 var mobilityFips = null;
-
+var currentWeek = 15;
 
 function main() {
 	var { svg, width, height } = initSVG();
@@ -27,8 +27,9 @@ function main() {
 function initCovidCasesMap(svg, width, height, counties, covidCases) {
 	var fips_to_name = {};
 
-	var currentWeek = 10;
 	var selectedID = 0;
+	var readyForUpdate = true
+	var play = false
 	var selectedPosition = [0,0]
 	var displayCases = false;
 	var displayMobility = false;
@@ -57,7 +58,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.enter()
 		.append('path')
 		.attr('class', 'county')
-		.attr('fill', function (d, i) { return calculateColor(d, covidCases, currentWeek, displayMobility); })
+		.attr('fill', 'white')
 		.attr('stroke', 'gray')
 		.attr('d', path)
 		.attr('id', function (d, i) { return d.id; });
@@ -114,12 +115,32 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 	});
 
 	d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
+	d3.select('#play').on('click', function(d)
+	{
+		if (play)
+		{
+			play = false;
+			this.value = "Play"
+			document.getElementById('weekSlider').disabled = false
+		}
+		else
+		{
+			play = true;
+			this.value = "Stop"
+			document.getElementById('weekSlider').disabled = true
+		}
+	});
+
 	d3.select('#weekSlider').on('change', function (d) {
-		var week = this.value;
+		var week = +this.value;
+		if (play === false)
+		{
+			currentWeek = +week;
+		}
+
 		d3.selectAll('.county')
 			.attr('fill', function (d, i) {
 				color = 'red';
-				currentWeek = week;
 				d3.select('#currentDate').text(Object.keys(mobilityDate)[currentWeek]);
 				if (d.id != selectedID) {
 					color = calculateColor(d, mobilityDate, currentWeek, displayMobility);
@@ -127,8 +148,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 				return color;
 			});
-
-			var week = this.value;
 
 			// SPIKES FOR CASES
 			svg.selectAll(".spikes").selectAll("path")
@@ -149,7 +168,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				return "translate(" + path.centroid(d) + ")";
 				})
 			.attr("d", function (d, i) {
-				currentWeek = week;
 				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
 				var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
 				return spike(cases)
@@ -202,17 +220,17 @@ d3.select('#mobilityDrop').on('change', function (d) {
 			d3.select("#weekSlider").dispatch("change");
 	});
 
-d3.select('#optionDrop').on('change', function (d) {
-	selectedCovid = document.getElementById('optionDrop').value;
-	
-	if(selectedCovid=="none")
-		displayCases = false;
-	else
-		displayCases = true;
+	d3.select('#optionDrop').on('change', function (d) {
+		selectedCovid = document.getElementById('optionDrop').value;
+		
+		if(selectedCovid=="none")
+			displayCases = false;
+		else
+			displayCases = true;
 
-	console.log(selectedCovid);
-	console.log(displayCases);
-	d3.select("#weekSlider").dispatch("change");
+		console.log(selectedCovid);
+		console.log(displayCases);
+		d3.select("#weekSlider").dispatch("change");
 
 	});
 
@@ -220,6 +238,12 @@ d3.select('#optionDrop').on('change', function (d) {
 	{
 		popup.update()
 		graphs.update()
+		if (readyForUpdate && play)
+		{
+			currentWeek = (currentWeek + 1) % 30
+			d3.select('#weekSlider').property('value', currentWeek)
+			d3.select('#weekSlider').on('change')();
+		}
 	})
 }
 
@@ -300,7 +324,7 @@ function calculateColor(d, data, week, displayMobility) {
 		}
 		return getColor(+value);
 	}
-	return 'lightgray';
+	return 'white';
 }
 
 function calculateRadius(d, data, week, displayCases) {
