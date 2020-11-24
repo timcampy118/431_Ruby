@@ -1,4 +1,4 @@
-date,fips,retail,grocery,parks,transit,workplace,residential
+date,flips,retail,grocery,parks,transit,workplaces,residential
 01/27/2020,01001,0,0,0,0,0,0
 02/03/2020,01001,0,0,0,0,0,0
 02/10/2020,01001,1,2,-11,0,-2,0
