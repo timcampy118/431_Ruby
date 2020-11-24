@@ -9,21 +9,3 @@ html {
     margin-left:auto
  }
 
-
-#legend_svg { /* This moves the legend to where ever I want*/
-	transform: translate(900px, -600px);
-	/* transform: matrix(1.1,0,0,1.1,1200,-500); matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) */
-
-	}
-#legTitle_svg { /* This moves the legend title to where ever I want*/
-transform: translate(500px, -800px);
-/* transform: matrix(1.1,0,0,1.1,1308,-880); matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) */
-
-}
-
-#content { /* This moves the legend to where ever I want*/
-	/* transform: translate(300px, 600px); */
-	/* transform: scale(2, 2); */
-	/* transform: matrix(1.5,0,0,1.5,200,300); matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) */
-	overflow: visible;
-	}

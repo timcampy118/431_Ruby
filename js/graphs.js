@@ -15,6 +15,8 @@ class Graph
 			.attr('color', 'white')
 		this.title = this.graphGroup.append('text')
 			.attr('color', 'white')
+		this.titleYAxis = this.graphGroup.append('text')
+			.attr('color', 'white')
 	}
 
 	onClick (d, width, height, index, data)
@@ -28,13 +30,13 @@ class Graph
 
 		const boxDim = {x: 250, y: 150};
 		const chartMargins = {
-			left: 30,
-			right: 30,
+			left: 45,
+			right: 10,
 			top: 30,
 			bottom: 20
 		};
 
-		var offsetX = Math.floor(index % 2) * (boxDim.x + 5)
+		var offsetX = Math.floor(index % 2) * (boxDim.x + 5) + 10
 		var offsetY = Math.floor(index / 2) * (boxDim.y + 5)
 		var x = Math.min(Math.max(offsetX, 0), width);
 		var y = Math.min(Math.max(offsetY, 0), height);
@@ -74,6 +76,13 @@ class Graph
 			.attr('x', `${x + 4}`)
 			.attr('y', `${y + 14}`)
 			.text(titleText)
+			.attr('font-weight', 'bold')
+			.attr('fill', 'white');
+		var yCenter = (boxDim.y - chartMargins.bottom - chartMargins.top)/2 + chartMargins.top + y
+		this.titleYAxis
+			.style('text-anchor', 'middle')
+			.text("% change")
+			.attr('transform', 'translate('+(x+15)+','+yCenter+') rotate(270)')
 			.attr('fill', 'white');
 
 		// Chart

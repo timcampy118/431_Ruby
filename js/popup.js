@@ -44,7 +44,7 @@ class Popup
 			.attr('color', 'white')
 		this.chartYAxisDeaths = this.popupGroup.append('g')
 			.attr('class', 'popup')
-			.attr('color', 'red')
+			.attr('color', 'orange')
 		this.clickTime = 0
 	}
 
@@ -81,7 +81,7 @@ class Popup
 
 		this.chartXAxis
 			.attr('transform', 'translate(0, ' + (y + boxDim.y - chartMargins.bottom) + ')')
-			.call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%b')))
+			.call(d3.axisBottom(xScale).ticks(5).tickFormat(d3.timeFormat('%b')))
 		this.chartYAxis
 			.attr('transform', 'translate(' + (x + chartMargins.left) + ', '+ 0 + ')')
 			.call(d3.axisLeft(yScale).ticks(5).tickFormat(function(d){
@@ -121,14 +121,12 @@ class Popup
 			.attr('x', `${x + 100}`)
 			.attr('y', `${y + 14}`)
 			.html('&mdash; cases')
-			.style('font-weight', 'bold')
 			.attr('fill', 'white');
 		this.deathsLabel
 			.attr('x', `${x + 190}`)
 			.attr('y', `${y + 14}`)
 			.html('&mdash; deaths')
-			.style('font-weight', 'bold')
-			.attr('fill', 'red');
+			.attr('fill', 'orange');
 
 		// Chart
 		this.chart
@@ -147,7 +145,7 @@ class Popup
 		this.chartDeaths
 			.datum(Object.keys(data))
 			.attr('stroke-width', 2)
-			.attr('stroke', 'red')
+			.attr('stroke', 'orange')
 			.attr('fill', 'none')
 			.attr('d', d3.line()
 				.x(function(d,i){

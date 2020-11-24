@@ -65,9 +65,10 @@ class Legend
         // Legend Title
         var legTitle = svg.append("text")
                         .attr("x", xLegend_Pos-25)
-                        .attr("y", yLegend_Pos-40)
+                        .attr("y", yLegend_Pos-37)
                         .text(legendName)
-                        .style("font-size", "20px")
+                        .style("font-size", "16px")
+                        .style('font-weight', 'bold')
                         .attr("alignment-baseline","middle");
 
         /*var legendBackdrop = svg.append("rect")
