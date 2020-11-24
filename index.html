@@ -26,21 +26,31 @@
     </div>
 
     <div class="row justify-content-center mt-3">
-      <input type='button' id="play" value='Play'/>
-      <input type='range' id='weekSlider' style='margin: 5px; margin-right: 10px;' min='0' max='30'></input>
+      <div class="col-1">
+        <input type="button" class="btn btn-outline-secondary" id="play" value='Play' />
+      </div>
+      <div class="col-3">
+        <input type='range' id='weekSlider' style='margin: 5px; margin-right: 10px;' min='0' max='30'></input>
+      </div>
 
-      <select id="optionDrop"></select>
-      <select id="mobilityDrop"></select>
+      <div class="col-3">
+        <label>COVID-19 Data &nbsp;<select id="optionDrop" class="mr-1"></select></label>
+      </div>
+
+      <div class="col-3">
+        <label>Mobility Category &nbsp;<select id="mobilityDrop"></select></label>
+      </div>
 
       <!--<input type='checkbox' style='margin: 5px' id='casesCheckbox' checked='true'>Cases</input> -->
     </div>
     <div class="row justify-content-center mt-3">
+      <span>Date:&nbsp;</span>
       <p id='currentDate'></p>
     </div>
 
   </div>
-</div>
-<div id="content"> </div>
+  </div>
+  <div id="content"> </div>
 
   <!-- Custom scripts -->
   <script src="js/data.js"></script>
@@ -53,14 +63,14 @@
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-    </script>
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
     integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
+  </script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
-  
+  </script>
+
 </body>
 
 </html>
