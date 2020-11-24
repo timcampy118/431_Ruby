@@ -11,6 +11,10 @@ class Popup
 		// Popup text
 		this.countyName = this.popupGroup.append('text')
 			.attr('class', 'popup')
+		this.casesLabel = this.popupGroup.append('text')
+			.attr('class', 'popup')
+		this.deathsLabel = this.popupGroup.append('text')
+			.attr('class', 'popup')
 
 		// Exit button
 		this.exitButton = this.popupGroup.append('g')
@@ -111,7 +115,20 @@ class Popup
 			.attr('x', `${x + 4}`)
 			.attr('y', `${y + 14}`)
 			.text(`${fips_to_name[d.srcElement.id]}`)
+			.style('font-weight', 'bold')
 			.attr('fill', 'white');
+		this.casesLabel
+			.attr('x', `${x + 100}`)
+			.attr('y', `${y + 14}`)
+			.html('&mdash; cases')
+			.style('font-weight', 'bold')
+			.attr('fill', 'white');
+		this.deathsLabel
+			.attr('x', `${x + 190}`)
+			.attr('y', `${y + 14}`)
+			.html('&mdash; deaths')
+			.style('font-weight', 'bold')
+			.attr('fill', 'red');
 
 		// Chart
 		this.chart

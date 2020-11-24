@@ -91,6 +91,7 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 
 	var popup = new Popup(svg);
 	var graphs = new Graphs(svg);
+	var legend = new Legend(svg);
 
 	// Logic for clicking in map
 	counties.on('click', function (d) {
