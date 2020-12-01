@@ -10,7 +10,7 @@ class Popup
 
 		// Popup text
 		this.countyName = this.popupGroup.append('text')
-			.attr('class', 'popup')
+			.attr('class', 'popup primary_text')
 		this.casesLabel = this.popupGroup.append('text')
 			.attr('class', 'popup')
 		this.deathsLabel = this.popupGroup.append('text')
@@ -20,9 +20,8 @@ class Popup
 		this.exitButton = this.popupGroup.append('g')
 			.attr('class', 'popup')
 		this.exitButtonText = this.exitButton.append('text')
-			.attr('class', 'popup')
+			.attr('class', 'popup primary_text')
 			.text('x')
-			.attr('fill', 'white')
 		this.exitButtonBackground = this.exitButton.append('rect')
 			.attr('class', 'popup')
 			.attr('opacity', 0)
@@ -108,7 +107,7 @@ class Popup
 			.attr('width', `${boxDim.x}`)
 			.attr('height', `${boxDim.y}`)
 			.attr('fill', 'black')
-			.attr('opacity', '0.7');
+			.attr('opacity', '0.8');
 
 		// Text
 		this.countyName
@@ -116,7 +115,6 @@ class Popup
 			.attr('y', `${y + 14}`)
 			.text(`${fips_to_name[d.srcElement.id]}`)
 			.style('font-weight', 'bold')
-			.attr('fill', 'white');
 		this.casesLabel
 			.attr('x', `${x + 100}`)
 			.attr('y', `${y + 14}`)

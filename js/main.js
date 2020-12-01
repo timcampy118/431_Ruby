@@ -6,6 +6,7 @@ var selectedMobility = "none";
 var mobilityDate = null;
 var mobilityFips = null;
 var currentWeek = 15;
+var firstTime = true;
 
 function main() {
 	var { svg, width, height } = initSVG();
@@ -89,9 +90,9 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 			return spike(cases)
 		});
 
-	var popup = new Popup(svg);
 	var graphs = new Graphs(svg);
 	var legend = new Legend(svg);
+	var popup = new Popup(svg);
 
 	// Logic for clicking in map
 	counties.on('click', function (d) {
@@ -154,6 +155,10 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 			svg.selectAll(".spikes").selectAll("path")
 			.attr("opacity", function(d)
 			{
+				if (isNaN(path.centroid(d)[0]))
+				{
+					return 0;
+				}
 				d3.select('#currentDate').text(Object.keys(covidCases)[currentWeek]);
 				var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
 				cases = Math.min(cases*10, 1.0)
@@ -179,7 +184,7 @@ var covidOptions = ["none","cases", "deaths"]
 var mobilityOptions = ["none","retail", "grocery", "parks", "transit", "workplaces", "residential"]
 
 
-	//cases or deaths
+//cases or deaths
 d3.select("#mobilityDrop")
       .selectAll('mobilityDrop')
       .data(mobilityOptions)
@@ -187,9 +192,9 @@ d3.select("#mobilityDrop")
       .append('option')
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
+d3.select('#mobilityDrop').property('value', 'retail')
 
-
-	//cases or deaths
+//cases or deaths
 d3.select("#optionDrop")
       .selectAll('myOptions')
       .data(covidOptions)
@@ -197,7 +202,7 @@ d3.select("#optionDrop")
       .append('option')
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
-
+d3.select('#optionDrop').property('value', 'cases')
 
 d3.select('#mobilityDrop').on('change', function (d) {
 	selectedMobility = document.getElementById('mobilityDrop').value;
@@ -244,6 +249,12 @@ d3.select('#mobilityDrop').on('change', function (d) {
 			currentWeek = (currentWeek + 1) % 30
 			d3.select('#weekSlider').property('value', currentWeek)
 			d3.select('#weekSlider').on('change')();
+		}
+		if (firstTime)
+		{
+			d3.select('#mobilityDrop').on('change')();
+			d3.select('#optionDrop').on('change')();
+			firstTime = false;
 		}
 	})
 }
@@ -408,3 +419,4 @@ function responsivefy(svg) {
 (() => {
 	main();
 })()
+

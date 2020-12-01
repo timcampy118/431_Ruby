@@ -45,22 +45,25 @@ class Legend
         var yLegend_Pos = 200;
         var yLegend_Pos_Offset = yLegend_Pos;
 
-        // Handmade legend
-        for (var key in legNum){
-            svg.append("circle").attr("cx",xLegend_Pos).attr("cy",yLegend_Pos_Offset).attr("r", 6).style("fill", legCol[key]).style("stroke", "black")
-            svg.append("text").attr("x", xLegend_textPos).attr("y", yLegend_Pos_Offset).text(legNum[key]).style("font-size", "15px").attr("alignment-baseline","middle")
-            yLegend_Pos_Offset = yLegend_Pos_Offset + 20;
-        }
+
         var legRectangle = svg.append("rect") // outline for legend
                                     .attr("x", xLegend_Pos-25)
                                     .attr("y", yLegend_Pos-25)
-                                    .attr("rx", 20)
-                                    .attr("ry", 20)
+                                    .attr("rx", 15)
+                                    .attr("ry", 15)
                                     .attr("width", 150)
                                     .attr("height", 205)
-                                    .style("fill-opacity", 0)
-                                    .style("stroke-width", 3)
+                                    .style("fill-opacity", 1.0)
+                                    .style("stroke-width", 2)
+                                    .attr('class', 'L2')
                                     .style("stroke", "black");
+
+        // Handmade legend
+        for (var key in legNum){
+            svg.append("circle").attr("cx",xLegend_Pos).attr("cy",yLegend_Pos_Offset).attr("r", 6).style("fill", legCol[key]).style("stroke", "black")
+            svg.append("text").attr("x", xLegend_textPos).attr("y", yLegend_Pos_Offset).text(legNum[key]).style("font-size", "15px").attr("alignment-baseline","middle").attr('class', 'secondary_text')
+            yLegend_Pos_Offset = yLegend_Pos_Offset + 20;
+        }
 
         // Legend Title
         var legTitle = svg.append("text")
@@ -68,7 +71,8 @@ class Legend
                         .attr("y", yLegend_Pos-37)
                         .text(legendName)
                         .style("font-size", "16px")
-                        .style('font-weight', 'bold')
+                        //.style('font-weight', 'bold')
+                        .attr('class', 'primary_text')
                         .attr("alignment-baseline","middle");
 
         /*var legendBackdrop = svg.append("rect")

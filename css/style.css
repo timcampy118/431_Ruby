@@ -1,11 +1,38 @@
 html {
 	size: 100%
-};
+}
 
 .container-fluid {
     padding-right:15px;
     padding-left:15px;
     margin-right:auto;
-    margin-left:auto
+    margin-left:auto;
  }
 
+/* Dark Theme */
+/* https://material.io/archive/guidelines/style/color.html#color-themes */
+
+body, .L1 {
+    background-color: #212121;
+    fill: #212121;
+}
+
+.L2 {
+    background-color: #303030;
+    fill: #303030;
+}
+
+.L3 {
+    background-color: #424242;
+    fill: #424242;
+}
+
+h1, .primary_text {
+    color: #FFFFFF;
+    fill: #FFFFFF;
+}
+
+.secondary_text {
+    color: rgba(255,255,255,0.7);
+    fill : rgba(255,255,255,0.7);
+}
