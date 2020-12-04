@@ -121,14 +121,29 @@ class Graphs
 		{
 			this.graphs.push(new Graph(svg))
 		}
+		this.description = svg.append('foreignObject')
+			.attr('x', 10)
+			.attr('y', 450+20)
+			.attr('width', 500)
+			.attr('height', 200)
+			.attr('visibility', 'hidden')
+		this.dText = this.description.append('xhtml:div')
+			.style('color', 'white')
+			.html('<p>Mobility data represents the percent change from a baseline day calculated from earlier in the year.</p>')
 	}
 
 	onClick (d, width, height, fips_to_name, data)
 	{
-		console.log(data)
 		for (var i = 0; i < this.graphs.length; i++)
 		{
 			this.graphs[i].onClick(d, width, height, i, data);
+		}
+
+		this.description.attr('visibility', 'visible')
+		if (data === undefined)
+		{
+			this.description.attr('visibility', 'hidden')
+			return
 		}
 	}
 

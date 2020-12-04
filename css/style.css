@@ -36,3 +36,37 @@ h1, .primary_text {
     color: rgba(255,255,255,0.7);
     fill : rgba(255,255,255,0.7);
 }
+
+.deaths {
+    stroke: red;
+}
+
+.deaths_text {
+    fill: red;
+}
+
+.deaths_axes {
+    color: red;
+}
+
+.deaths_spikes {
+    stroke: red;
+    fill: red;
+}
+
+.cases {
+    stroke: gray;
+}
+
+.cases_text {
+    fill: gray;
+}
+
+.cases_axes {
+    color: gray;
+}
+
+.cases_spikes {
+    stroke: gray;
+    fill: gray;
+}

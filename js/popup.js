@@ -12,9 +12,9 @@ class Popup
 		this.countyName = this.popupGroup.append('text')
 			.attr('class', 'popup primary_text')
 		this.casesLabel = this.popupGroup.append('text')
-			.attr('class', 'popup')
+			.attr('class', 'popup cases_text')
 		this.deathsLabel = this.popupGroup.append('text')
-			.attr('class', 'popup')
+			.attr('class', 'popup deaths_text')
 
 		// Exit button
 		this.exitButton = this.popupGroup.append('g')
@@ -32,18 +32,16 @@ class Popup
 
 		// Chart
 		this.chart = this.popupGroup.append('path')
-			.attr('class', 'popup')
+			.attr('class', 'popup deaths')
 		this.chartDeaths = this.popupGroup.append('path')
-			.attr('class', 'popup')
+			.attr('class', 'popup cases')
 		this.chartXAxis = this.popupGroup.append('g')
 			.attr('class', 'popup')
 			.attr('color', 'white')
 		this.chartYAxis = this.popupGroup.append('g')
-			.attr('class', 'popup')
-			.attr('color', 'white')
+			.attr('class', 'popup cases_axes')
 		this.chartYAxisDeaths = this.popupGroup.append('g')
-			.attr('class', 'popup')
-			.attr('color', 'orange')
+			.attr('class', 'popup deaths_axes')
 		this.clickTime = 0
 	}
 
@@ -119,18 +117,15 @@ class Popup
 			.attr('x', `${x + 100}`)
 			.attr('y', `${y + 14}`)
 			.html('&mdash; cases')
-			.attr('fill', 'white');
 		this.deathsLabel
 			.attr('x', `${x + 190}`)
 			.attr('y', `${y + 14}`)
 			.html('&mdash; deaths')
-			.attr('fill', 'orange');
 
 		// Chart
 		this.chart
 			.datum(Object.keys(data))
 			.attr('stroke-width', 2)
-			.attr('stroke', 'white')
 			.attr('fill', 'none')
 			.attr('d', d3.line()
 				.x(function(d,i){
@@ -143,7 +138,6 @@ class Popup
 		this.chartDeaths
 			.datum(Object.keys(data))
 			.attr('stroke-width', 2)
-			.attr('stroke', 'orange')
 			.attr('fill', 'none')
 			.attr('d', d3.line()
 				.x(function(d,i){

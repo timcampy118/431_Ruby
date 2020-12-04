@@ -76,7 +76,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 		.attr("fill", "red")
 		.attr("fill-opacity", 0.1)
 		.attr("opacity", 0)
-		.attr("stroke", "red")
 		.attr("transform", function(d) {
 			if (isNaN(path.centroid(d)[0]))
 			{
@@ -164,7 +163,6 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				cases = Math.min(cases*10, 1.0)
 				return cases
 			})
-			.attr("stroke", "red")
 			.attr("transform", function(d) {
 				if (isNaN(path.centroid(d)[0]))
 				{
@@ -178,6 +176,15 @@ function initCovidCasesMap(svg, width, height, counties, covidCases) {
 				var cases = calculateSpikeLength(d, covidCases, currentWeek, displayCases);
 				return spike(cases)
 			});
+			if (selectedCovid == 'deaths')
+			{
+				svg.selectAll(".spikes").selectAll("path").attr('class', 'spikes deaths_spikes')
+			}
+			else
+			{
+				svg.selectAll(".spikes").selectAll("path").attr('class', 'spikes cases_spikes')
+			}
+
 	});
 
 var covidOptions = ["none","cases", "deaths"]
